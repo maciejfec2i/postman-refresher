@@ -1,0 +1,275 @@
+{
+	"info": {
+		"_postman_id": "7c597a59-0756-49e2-ab27-1fb9af903415",
+		"name": "JsonPlaceholderAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21371162"
+	},
+	"item": [
+		{
+			"name": "GET Posts",
+			"item": [
+				{
+					"name": "GET All Posts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.be.ok\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Has more than 1 result\", () => {\r",
+									"    let jsonBody = pm.response.json()\r",
+									"    pm.expect(jsonBody.length).to.be.greaterThan(1)\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://jsonplaceholder.typicode.com/posts",
+							"protocol": "https",
+							"host": [
+								"jsonplaceholder",
+								"typicode",
+								"com"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Post by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.be.ok\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Post ID is correct\", () => {\r",
+									"    let resBody = pm.response.json()\r",
+									"    let postId = resBody.id\r",
+									"    pm.expect(postId).to.equal(pm.environment.get(\"randPostId\"))\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"randPostId\", _.random(1, 100))"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://jsonplaceholder.typicode.com/posts/:id",
+							"protocol": "https",
+							"host": [
+								"jsonplaceholder",
+								"typicode",
+								"com"
+							],
+							"path": [
+								"posts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{randPostId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "POST Post",
+			"item": [
+				{
+					"name": "POST Post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", () => {\r",
+									"    pm.response.to.have.status(201)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response body contains Post title & body\", () => {\r",
+									"    pm.expect(pm.response.text()).to.include(\"body\").and.to.include(\"title\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"{{$randomLoremWords}}\",\r\n    \"body\": \"{{$randomLoremSentences}}\",\r\n    \"userId\": {{$randomInt}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://jsonplaceholder.typicode.com/posts",
+							"protocol": "https",
+							"host": [
+								"jsonplaceholder",
+								"typicode",
+								"com"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PUT Post",
+			"item": [
+				{
+					"name": "Update Post",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"randPostId\", _.random(1, 100))"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Post title & post body are updated\", () => {\r",
+									"    const postTitle = pm.response.json().title\r",
+									"    const postBody = pm.response.json().body\r",
+									"\r",
+									"    pm.expect(postTitle).to.be.equal(\"updated title\")\r",
+									"    pm.expect(postBody).to.be.equal(\"updated body\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"updated title\",\r\n    \"body\": \"updated body\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://jsonplaceholder.typicode.com/posts/:id",
+							"protocol": "https",
+							"host": [
+								"jsonplaceholder",
+								"typicode",
+								"com"
+							],
+							"path": [
+								"posts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{randPostId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DELETE Post",
+			"item": [
+				{
+					"name": "DELETE Post",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"randPostId\", _.random(1, 100))"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://jsonplaceholder.typicode.com/posts/:id",
+							"protocol": "https",
+							"host": [
+								"jsonplaceholder",
+								"typicode",
+								"com"
+							],
+							"path": [
+								"posts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{randPostId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
